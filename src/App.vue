@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper" id="app">
+    <img src="@/assets/images/Citizenship_and_Immigration_Canada_Logo.png" alt="Citizenship and Immigration Canada Logo" class="corner-logo" />
     <CardForm
       :form-data="formData"
       @input-card-number="updateCardNumber"
@@ -50,4 +51,11 @@ export default {
 
 <style lang="scss">
 @import '../src/assets/style.scss';
+.corner-logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 700px; /* Adjust the size as needed */
+  height: auto;
+}
 </style>
